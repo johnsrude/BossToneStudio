@@ -12,7 +12,9 @@ def pretty(args):
 
         #for patch in liveset["patchList"]:
         for i, patch in enumerate(liveset["patchList"]):
-            print("{}. {}".format(i, patch["name"]))
+            if i % 4 == 0:
+                print("\nBank U{}".format(i // 4))
+            print("{2}: {1} ({0})".format(i, patch["name"], i % 4 + 1))
 
             if not args.patch_list:
                 pass
