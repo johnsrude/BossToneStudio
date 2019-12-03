@@ -1,24 +1,34 @@
 import argparse
 import json
+import yaml
 
 
 def pretty(args):
     with open(args.filename, "r") as file:
         # text = file.read()
         liveset = json.load(file)
-        print("Filename: {}".format(args.filename))
-        print("Device: {}\n".format(liveset["device"]))
+        print(f"Filename: {args.filename}")
+        print(f"Device: {liveset['device']}\n")
+
+        indent = "    "
 
         for i, patch in enumerate(liveset["patchList"]):
             if i % 4 == 0:
-                print("\nBank U{}".format(i // 4))
-            print("{2}: {1} ({0:02d})".format(i, patch["name"], i % 4 + 1))
+                print(f"\nU{i // 4}")
+            print(f"{indent*1}{i % 4 + 1}: {patch['name']} ({i:02d})")
 
             if not args.patch_list:
-                pass
+                # print(json.dumps(patch["params"], indent=4))
+                chain = "IN ->"
 
-        if not args.patch_list:
-            print(json.dumps(liveset, indent=4))
+                chain += " OUT"
+                print(f"{patch['name']:>4} )")
+                print(f"{chain}")
+                print(f"Noise: {patch['params']['ns_thresh']}")
+                # print(yaml.dump(patch["params"], allow_unicode=True,
+                #                 default_flow_style=False))
+        # if not args.patch_list:
+        #     print(json.dumps(liveset, indent=4))
 
 
 def main():
