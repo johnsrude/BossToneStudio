@@ -2,6 +2,16 @@ import argparse
 import json
 import yaml
 
+def main():
+    parser = argparse.ArgumentParser(
+        description="Print BOSS Tone Studio livesets.")
+    parser.add_argument("filename", help="File name (*.tsl)")
+    parser.add_argument("-L", "--patch_list", help="Display list of patches only",
+                        action="store_true")
+    parser.add_argument("-p", "--patch", help="Display single patch", nargs="+")
+    args = parser.parse_args()
+    args.patch = " ".join(args.patch)
+    pretty(args)
 
 
 def pretty(args):
@@ -14,30 +24,34 @@ def pretty(args):
         indent = "   "
 
         for i, patch in enumerate(liveset["patchList"]):
+            if args.patch and args.patch not in patch["name"]: continue
+
             if i % 4 == 0:
                 print(f"U{i // 4}")
-            print(f"{indent*1}{i % 4 + 1}: {patch['name']} ({i:02d})")
+            print(f"{indent * 1}{i % 4 + 1}: {patch['name']} ({i:02d})")
 
             if not args.patch_list:
                 # print(json.dumps(params, indent=4))
-                print_patch(indent, patch)
+                print_me80_patch(indent, patch)
         # if not args.patch_list:
         #     print(json.dumps(liveset, indent=4))
 
+
 pedal_fx_dict = {
-    "0" : "WAH",
-    "1" : "VOICE",
-    "2" : "+1 OCT",
-    "3" : "+2 OCT",
-    "4" : "-1 OCT",
-    "5" : "FREEZE",
-    "6" : "OSC DELAY",
-    "7" : "OD/DS",
-    "8" : "MOD RATE",
-    "9" : "DELAY LEV",
+    "0": "WAH",
+    "1": "VOICE",
+    "2": "+1 OCT",
+    "3": "+2 OCT",
+    "4": "-1 OCT",
+    "5": "FREEZE",
+    "6": "OSC DELAY",
+    "7": "OD/DS",
+    "8": "MOD RATE",
+    "9": "DELAY LEV",
 }
 
-def print_patch(indent, patch):
+
+def print_me80_patch(indent, patch):
     params = patch["params"]
     pad = indent * 2
 
@@ -61,17 +75,6 @@ def print_patch(indent, patch):
     print(f"CTL: TBD")
     print(yaml.dump(params, allow_unicode=True, default_flow_style=False))
     print("")
-
-
-def main():
-    parser = argparse.ArgumentParser(
-        description="Print BOSS Tone Studio livesets.")
-    parser.add_argument("filename", help="File name (*.tsl)")
-    parser.add_argument("-p", "--patch_list", help="Display list of patches only",
-                        action="store_true")
-    args = parser.parse_args()
-
-    pretty(args)
 
 
 if __name__ == "__main__":
