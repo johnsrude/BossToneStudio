@@ -19,10 +19,18 @@ def pretty(args):
 
             if not args.patch_list:
                 # print(json.dumps(patch["params"], indent=4))
+                params = patch["params"]
                 pad = indent * 2
-                chain = "IN ->"
-
-                chain += f" OUT"
+                chain = "IN -> "
+                if params["comp_sw"] != '0': chain += f"COMP/FX1 -> "
+                if params["odds_sw"] != '0': chain += f"OD/DS -> "
+                if params["mod_sw"] != '0': chain += f"MOD -> "
+                if params["mod_sw"] != '0': chain += f"PREAMP -> "
+                if params["pdlfx_sw"] != '0': chain += f"PEDAL FX -> "
+                if params["fx2_sw"] != '0': chain += f"EQ/FX2 -> "
+                if params["dly_sw"] != '0': chain += f"DELAY -> "
+                if params["rev_sw"] != '0': chain += f"REVERB -> "
+                chain += f"OUT"
 
                 noise = int(patch['params']['ns_thresh'])
                 if noise > 0:
@@ -31,8 +39,7 @@ def pretty(args):
                 print(f"{pad}{chain}")
 
 
-                # print(yaml.dump(patch["params"], allow_unicode=True,
-                #                 default_flow_style=False))
+                print(yaml.dump(patch["params"], allow_unicode=True, default_flow_style=False))
                 print("")
         # if not args.patch_list:
         #     print(json.dumps(liveset, indent=4))
