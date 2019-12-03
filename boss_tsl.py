@@ -10,23 +10,30 @@ def pretty(args):
         print(f"Filename: {args.filename}")
         print(f"Device: {liveset['device']}\n")
 
-        indent = "    "
+        indent = "   "
 
         for i, patch in enumerate(liveset["patchList"]):
             if i % 4 == 0:
-                print(f"\nU{i // 4}")
+                print(f"U{i // 4}")
             print(f"{indent*1}{i % 4 + 1}: {patch['name']} ({i:02d})")
 
             if not args.patch_list:
                 # print(json.dumps(patch["params"], indent=4))
+                pad = indent * 2
                 chain = "IN ->"
 
-                chain += " OUT"
-                print(f"{patch['name']:>4} )")
-                print(f"{chain}")
-                print(f"Noise: {patch['params']['ns_thresh']}")
+                chain += f" OUT"
+
+                noise = int(patch['params']['ns_thresh'])
+                if noise > 0:
+                    chain += f"{pad}Noise: {noise}"
+
+                print(f"{pad}{chain}")
+
+
                 # print(yaml.dump(patch["params"], allow_unicode=True,
                 #                 default_flow_style=False))
+                print("")
         # if not args.patch_list:
         #     print(json.dumps(liveset, indent=4))
 
