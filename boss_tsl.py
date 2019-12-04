@@ -10,7 +10,7 @@ def main():
                         action="store_true")
     parser.add_argument("-p", "--patch", help="Display single patch", nargs="+")
     args = parser.parse_args()
-    args.patch = " ".join(args.patch)
+    if args.patch: args.patch = " ".join(args.patch)
     pretty(args)
 
 
@@ -53,28 +53,46 @@ pedal_fx_dict = {
 
 def print_me80_patch(indent, patch):
     params = patch["params"]
-    pad = indent * 2
 
     pedal_fx = params["pdlfx_sw"] != '0'
     pedal_fx_type = pedal_fx_dict[params['pdlfx_type']]
     noise = int(params['ns_thresh'])
 
+    print_effects_chain(indent, noise, params, pedal_fx, pedal_fx_type)
+    print_control_pedal(indent, params)
+
+    # print(yaml.dump(params, allow_unicode=True, default_flow_style=False))
+    print("")
+
+
+def print_control_pedal(indent, params):
+    ctl = "CTL "
+    if params["ctl_mode"] == "1":
+        ctl += "(TOGGLE): "
+    else:
+        ctl += "(MOMENTARY): "
+    controls = ['PEDAL FX', 'REVERB', 'EQ/FX2', 'PREAMP', 'DELAY', 'MOD', 'OD/DS',
+                'COMP/FX1']
+    bitmap = list(f'{int(params["ctl_target"]):08b}')
+    active_controls = [c for b, c in zip(bitmap, controls) if b == '1']
+    print(f"{indent * 2}{ctl}{', '.join(active_controls)}")
+
+
+def print_effects_chain(indent, noise, params, pedal_fx, pedal_fx_type):
     chain = "IN -> "
     if pedal_fx: chain += f"PEDAL FX ({pedal_fx_type}) -> "
-    if params["comp_sw"] != '0': chain += f"COMP/FX1 -> "
-    if params["odds_sw"] != '0': chain += f"OD/DS -> "
-    if params["mod_sw"] != '0': chain += f"PREAMP -> "
+    if params["comp_sw"] != '0': chain += "COMP/FX1 -> "
+    if params["odds_sw"] != '0': chain += "OD/DS -> "
+    if params["mod_sw"] != '0': chain += "PREAMP -> "
     if noise > 0: chain += f"NS ({noise}) -> "
-    if params["pdlfx_sw"] == '0': chain += f"PEDAL VOL -> "
-    if params["mod_sw"] != '0': chain += f"MOD -> "
-    if params["fx2_sw"] != '0': chain += f"EQ/FX2 -> "
-    if params["dly_sw"] != '0': chain += f"DELAY -> "
-    if params["rev_sw"] != '0': chain += f"REVERB -> "
+    if params["pdlfx_sw"] == '0': chain += "PEDAL VOL -> "
+    if params["mod_sw"] != '0': chain += "MOD -> "
+    if params["fx2_sw"] != '0': chain += "EQ/FX2 -> "
+    if params["dly_sw"] != '0': chain += "DELAY -> "
+    if params["rev_sw"] != '0': chain += "REVERB -> "
     chain += f"OUT"
+    pad = indent * 2
     print(f"{pad}{chain}")
-    print(f"CTL: TBD")
-    print(yaml.dump(params, allow_unicode=True, default_flow_style=False))
-    print("")
 
 
 if __name__ == "__main__":
