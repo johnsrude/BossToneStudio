@@ -53,6 +53,88 @@ pedal_fx_dict = {
     "9": "DELAY LEV",
 }
 
+comp_fx1_dict = {
+    "0": "COMP",
+    "1": "T.WAH UP",
+    "2": "T.WAH DOWN",
+    "3": "OCTAVE",
+    "4": "SLOW GEAR",
+    "5": "DEFRETTER",
+    "6": "RING MOD",
+    "7": "AC SIM",
+    "8": "Single>Hum",
+    "9": "Hum>Single",
+    "10": "SOLO",
+}
+
+od_ds_dict = {
+    "0": "BOOST",
+    "1": "OVERDRIVE",
+    "2": "T-SCREAM",
+    "3": "BLUES",
+    "4": "TURBO OD",
+    "5": "DISTORTION",
+    "6": "TURBO DS",
+    "7": "METAL DS",
+    "8": "CORE",
+    "9": "FUZZ",
+    "10": "OCT FUZZ",
+}
+
+mod_dict = {
+    "0": "PHASER",
+    "1": "FLANGER",
+    "2": "TREMOLO",
+    "3": "CHORUS",
+    "4": "VIBRATO",
+    "5": "PITCH SHIFT",
+    "6": "HARMONIST",
+    "7": "ROTARY",
+    "8": "UNI-V",
+    "9": "DELAY",
+    "10": "OVERTONE",
+}
+
+delay_dict = {
+    "0": "1-99 ms",
+    "1": "100-600 ms",
+    "2": "500-6000 ms",
+    "3": "ANALOG",
+    "4": "TAPE",
+    "5": "MODULATE",
+    "6": "REVERSE",
+    "7": "CHO + DELAY",
+    "8": "TEMPO",
+    "9": "TERA ECHO",
+    "10": "PHRASE LOOP",
+}
+
+preamp_dict = {
+    "0": "AC",
+    "1": "CLEAN",
+    "2": "TWEED",
+    "3": "CRUNCH",
+    "4": "COMBO",
+    "5": "LEAD",
+    "6": "DRIVE",
+    "7": "STACK",
+    "8": "METAL",
+}
+
+eq_fx2_dict = {
+    "0": "PHASER",
+    "1": "TREMOLO",
+    "2": "BOOST",
+    "3": "DELAY",
+    "4": "CHORUS",
+    "5": "EQ",
+}
+
+reverb_dict = {
+    "0": "ROOM",
+    "1": "HALL",
+    "2": "SPRING",
+}
 
 def print_me80_patch(indent, patch):
     params = patch["params"]
@@ -84,15 +166,24 @@ def control_string(params):
 def print_effects_chain(indent, noise, params, pedal_fx, pedal_fx_type):
     chain = "IN -> "
     if pedal_fx: chain += f"PEDAL FX ({pedal_fx_type}) -> "
-    if params["comp_sw"] != '0': chain += "COMP/FX1 -> "
-    if params["odds_sw"] != '0': chain += "OD/DS -> "
-    if params["mod_sw"] != '0': chain += "PREAMP -> "
-    if noise > 0: chain += f"NS ({noise}) -> "
-    if params["pdlfx_sw"] == '0': chain += "PEDAL VOL -> "
-    if params["mod_sw"] != '0': chain += "MOD -> "
-    if params["fx2_sw"] != '0': chain += "EQ/FX2 -> "
-    if params["dly_sw"] != '0': chain += "DELAY -> "
-    if params["rev_sw"] != '0': chain += "REVERB -> "
+    if params["comp_sw"] != '0':
+        chain += f"COMP/FX1 ({comp_fx1_dict[params['comp_type']]}) -> "
+    if params["odds_sw"] != '0':
+        chain += f"OD/DS ({od_ds_dict[params['odds_type']]}) -> "
+    if params["amp_sw"] != '0':
+        chain += f"PREAMP  ({preamp_dict[params['amp_type']]})-> "
+    if noise > 0:
+        chain += f"NS ({noise}) -> "
+    if params["pdlfx_sw"] == '0':
+        chain += f"PEDAL VOL ({pedal_fx_dict[params['pdlfx_type']]}) -> "
+    if params["mod_sw"] != '0':
+        chain += f"MOD ({mod_dict[params['mod_type']]}) ->  "
+    if params["fx2_sw"] != '0':
+        chain += f"EQ/FX2 ({eq_fx2_dict[params['fx2_type']]}) -> "
+    if params["dly_sw"] != '0':
+        chain += f"DELAY ({delay_dict[params['dly_type']]}) -> "
+    if params["rev_sw"] != '0':
+        chain += f"REVERB ({reverb_dict[params['rev_type']]}) -> "
     chain += f"OUT"
     pad = indent * 2
     print(f"{pad}{chain}")
