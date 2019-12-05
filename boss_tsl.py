@@ -5,10 +5,11 @@ import yaml
 def main():
     parser = argparse.ArgumentParser(
         description="Print BOSS Tone Studio livesets.")
-    parser.add_argument("filename", help="File name (*.tsl)")
     parser.add_argument("-L", "--patch_list", help="Display list of patches only",
                         action="store_true")
-    parser.add_argument("-p", "--patch", help="Display single patch", nargs="+")
+    parser.add_argument("filename", help="File name (*.tsl)")
+    parser.add_argument("patch", help="Display only 1 patch which may have spaces in "
+                                      "the name", nargs="*")
     args = parser.parse_args()
     if args.patch: args.patch = " ".join(args.patch)
     pretty(args)
@@ -66,6 +67,10 @@ def print_me80_patch(indent, patch):
 
 
 def print_control_pedal(indent, params):
+    print(f"{indent * 2}{control_string(params)}")
+
+
+def control_string(params):
     ctl = "CTL "
     if params["ctl_mode"] == "1":
         ctl += "(TOGGLE): "
@@ -75,7 +80,8 @@ def print_control_pedal(indent, params):
                 'COMP/FX1']
     bitmap = list(f'{int(params["ctl_target"]):08b}')
     active_controls = [c for b, c in zip(bitmap, controls) if b == '1']
-    print(f"{indent * 2}{ctl}{', '.join(active_controls)}")
+    ctl_str = f"{ctl}{', '.join(active_controls)}"
+    return ctl_str
 
 
 def print_effects_chain(indent, noise, params, pedal_fx, pedal_fx_type):
