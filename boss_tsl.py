@@ -24,12 +24,14 @@ def pretty(args):
 
         indent = "   "
 
+
         for i, patch in enumerate(liveset["patchList"]):
             if args.patch and args.patch not in patch["name"]: continue
 
             if i % 4 == 0:
                 print(f"U{i // 4}")
-            print(f"{indent * 1}{i % 4 + 1}: {patch['name']} ({i:02d})")
+            print(f"{indent}{i % 4 + 1}: {patch['name']} ({i:02d})"
+                  f"{indent*2}{control_string(patch['params'])}")
 
             if not args.patch_list:
                 # print(json.dumps(params, indent=4))
@@ -60,14 +62,9 @@ def print_me80_patch(indent, patch):
     noise = int(params['ns_thresh'])
 
     print_effects_chain(indent, noise, params, pedal_fx, pedal_fx_type)
-    print_control_pedal(indent, params)
 
     # print(yaml.dump(params, allow_unicode=True, default_flow_style=False))
     print("")
-
-
-def print_control_pedal(indent, params):
-    print(f"{indent * 2}{control_string(params)}")
 
 
 def control_string(params):
