@@ -8,7 +8,8 @@ def main():
     parser.add_argument("-L", "--patch_list", help="Display list of patches only",
                         action="store_true")
     parser.add_argument("filename", help="File name (*.tsl)")
-    parser.add_argument("patch", help="Display only 1 patch which may have spaces in "
+    parser.add_argument("patch", help="[Optional] Display only 1 patch which may have "
+                                      "spaces in "
                                       "the name", nargs="*")
     args = parser.parse_args()
     if args.patch: args.patch = " ".join(args.patch)
@@ -22,6 +23,10 @@ def pretty(args):
         print(f"Filename: {args.filename}")
         print(f"Device: {liveset['device']}\n")
 
+        if liveset['device'] != "ME-80":
+            print(f"{liveset['device']} is not yet supported")
+            exit()
+
         indent = "   "
 
 
@@ -34,10 +39,7 @@ def pretty(args):
                   f"{indent*2}{control_string(patch['params'])}")
 
             if not args.patch_list:
-                # print(json.dumps(params, indent=4))
                 print_me80_patch(indent, patch)
-        # if not args.patch_list:
-        #     print(json.dumps(liveset, indent=4))
 
 
 pedal_fx_dict = {
@@ -189,40 +191,40 @@ def print_effects_chain(indent, noise, params, pedal_fx, pedal_fx_type):
 def print_knobs(indent, params):
     pad = indent * 2
     if params["comp_sw"] != '0':
-        print(f"{pad}COMP/FX1 ({comp_fx1_dict[params['comp_type']]}):{pad}"
+        print(f"{pad}COMP/FX1 ({comp_fx1_dict[params['comp_type']]}):{indent}"
               f"FREQ/LOW={params['comp1']}{indent}"
               f"D.LEVEL/HIGH={params['comp2']}{indent}"
               f"E.LEVEL/LEVEL={params['comp3']}")
     if params["odds_sw"] != '0':
-        print(f"{pad}OD/DS ({od_ds_dict[params['odds_type']]}):{pad}"
+        print(f"{pad}OD/DS ({od_ds_dict[params['odds_type']]}):{indent}"
               f"DRIVE={params['odds1']}{indent}"
               f"TONE={params['odds2']}{indent}"
               f"LEVEL={params['odds3']}")
     if params["amp_sw"] != '0':
-        print(f"{pad}PREAMP ({preamp_dict[params['amp_type']]}):{pad}"
+        print(f"{pad}PREAMP ({preamp_dict[params['amp_type']]}):{indent}"
               f"GAIN={params['amp1']}{indent}"
               f"BASS={params['amp2']}{indent}"
               f"MIDDLE={params['amp3']}{indent}"
               f"TREBLE={params['amp4']}{indent}"
               f"LEVEL={params['amp5']}")
     if params["mod_sw"] != '0':
-        print(f"{pad}MOD ({mod_dict[params['mod_type']]}):{pad}"
+        print(f"{pad}MOD ({mod_dict[params['mod_type']]}):{indent}"
               f"RATE/KEY/UPPER={params['mod1']}{indent}"
               f"DEPTH/HARMONY/LOWER={params['mod2']}{indent}"
               f"E.LEVEL/RESONANCE/D.LEVEL={params['mod3']}")
     if params["fx2_sw"] != '0':
-        print(f"{pad}EQ/FX2 ({eq_fx2_dict[params['fx2_type']]}):{pad}"
+        print(f"{pad}EQ/FX2 ({eq_fx2_dict[params['fx2_type']]}):{indent}"
               f"BASS={params['fx2_1']}{indent}"
               f"RATE/TIME/MIDDLE={params['fx2_2']}{indent}"
               f"DEPTH/FB/TREBLE={params['fx2_3']}{indent}"
               f"LEVEL={params['fx2_4']}")
     if params["dly_sw"] != '0':
-        print(f"{pad}DELAY ({delay_dict[params['dly_type']]}):{pad}"
+        print(f"{pad}DELAY ({delay_dict[params['dly_type']]}):{indent}"
               f"TIME={params['dly1']}{indent}"
               f"FEEDBACK={params['dly2']}{indent}"
               f"E.LEVEL={params['dly3']}")
     if params["rev_sw"] != '0':
-        print(f"{pad}REVERB ({reverb_dict[params['rev_type']]}):{pad}"
+        print(f"{pad}REVERB ({reverb_dict[params['rev_type']]}):{indent}"
               f"LEVEL={params['rev']}")
 
 if __name__ == "__main__":
