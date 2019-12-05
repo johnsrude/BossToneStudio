@@ -138,13 +138,11 @@ reverb_dict = {
 
 def print_me80_patch(indent, patch):
     params = patch["params"]
-
     pedal_fx = params["pdlfx_sw"] != '0'
     pedal_fx_type = pedal_fx_dict[params['pdlfx_type']]
     noise = int(params['ns_thresh'])
-
     print_effects_chain(indent, noise, params, pedal_fx, pedal_fx_type)
-
+    print_knobs(indent, params)
     # print(yaml.dump(params, allow_unicode=True, default_flow_style=False))
     print("")
 
@@ -188,6 +186,44 @@ def print_effects_chain(indent, noise, params, pedal_fx, pedal_fx_type):
     pad = indent * 2
     print(f"{pad}{chain}")
 
+def print_knobs(indent, params):
+    pad = indent * 2
+    if params["comp_sw"] != '0':
+        print(f"{pad}COMP/FX1 ({comp_fx1_dict[params['comp_type']]}):{pad}"
+              f"FREQ/LOW={params['comp1']}{indent}"
+              f"D.LEVEL/HIGH={params['comp2']}{indent}"
+              f"E.LEVEL/LEVEL={params['comp3']}")
+    if params["odds_sw"] != '0':
+        print(f"{pad}OD/DS ({od_ds_dict[params['odds_type']]}):{pad}"
+              f"DRIVE={params['odds1']}{indent}"
+              f"TONE={params['odds2']}{indent}"
+              f"LEVEL={params['odds3']}")
+    if params["amp_sw"] != '0':
+        print(f"{pad}PREAMP ({preamp_dict[params['amp_type']]}):{pad}"
+              f"GAIN={params['amp1']}{indent}"
+              f"BASS={params['amp2']}{indent}"
+              f"MIDDLE={params['amp3']}{indent}"
+              f"TREBLE={params['amp4']}{indent}"
+              f"LEVEL={params['amp5']}")
+    if params["mod_sw"] != '0':
+        print(f"{pad}MOD ({mod_dict[params['mod_type']]}):{pad}"
+              f"RATE/KEY/UPPER={params['mod1']}{indent}"
+              f"DEPTH/HARMONY/LOWER={params['mod2']}{indent}"
+              f"E.LEVEL/RESONANCE/D.LEVEL={params['mod3']}")
+    if params["fx2_sw"] != '0':
+        print(f"{pad}EQ/FX2 ({eq_fx2_dict[params['fx2_type']]}):{pad}"
+              f"BASS={params['fx2_1']}{indent}"
+              f"RATE/TIME/MIDDLE={params['fx2_2']}{indent}"
+              f"DEPTH/FB/TREBLE={params['fx2_3']}{indent}"
+              f"LEVEL={params['fx2_4']}")
+    if params["dly_sw"] != '0':
+        print(f"{pad}DELAY ({delay_dict[params['dly_type']]}):{pad}"
+              f"TIME={params['dly1']}{indent}"
+              f"FEEDBACK={params['dly2']}{indent}"
+              f"E.LEVEL={params['dly3']}")
+    if params["rev_sw"] != '0':
+        print(f"{pad}REVERB ({reverb_dict[params['rev_type']]}):{pad}"
+              f"LEVEL={params['rev']}")
 
 if __name__ == "__main__":
     main()
