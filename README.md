@@ -1,7 +1,13 @@
 # BossToneStudio
 Scripts for Boss Tone Studio
 
-usage: boss_tsl.py [-h] [-L] filename [patch [patch ...]]
+boss_tsl.py
+
+Prints the settings of a liveset that has been exported to a TSL file. 
+
+Currently only livesets for the BOSS ME-80 are supported.
+
+usage: boss_tsl.py [-h] [-L] filename [patch]
 
 Print BOSS Tone Studio livesets. Requires Python 3.6+
 
