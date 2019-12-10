@@ -151,16 +151,16 @@ def print_me80_patch(indent, patch):
 
 
 def control_string(params):
-    ctl = "CTL "
-    if params["ctl_mode"] == "1":
-        ctl += "(TOGGLE): "
-    else:
-        ctl += "(MOMENTARY): "
     controls = ['PEDAL FX', 'REVERB', 'EQ/FX2', 'PREAMP', 'DELAY', 'MOD', 'OD/DS',
                 'COMP/FX1']
     bitmap = list(f'{int(params["ctl_target"]):08b}')
     active_controls = [c for b, c in zip(bitmap, controls) if b == '1']
-    ctl_str = f"{ctl}{', '.join(active_controls)}"
+    ctl_str = "CTL: " + f"{', '.join(active_controls)}"
+    if params["ctl_mode"] == "1":
+        ctl_str += "\t(TOGGLE)"
+    else:
+        ctl_str += "\t(MOMENTARY)"
+
     return ctl_str
 
 
