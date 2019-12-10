@@ -8,9 +8,10 @@ def main():
     parser.add_argument("-L", "--patch_list", help="Display list of patches only",
                         action="store_true")
     parser.add_argument("filename", help="File name (*.tsl)")
-    parser.add_argument("patch", help="[Optional] Display only 1 patch which may have "
-                                      "spaces in "
-                                      "the name", nargs="*")
+    parser.add_argument("patch",
+                        help="[Optional] Display only 1 patch which may have "
+                        "spaces in the name",
+                        nargs="*")
     args = parser.parse_args()
     if args.patch: args.patch = " ".join(args.patch)
     pretty(args)
@@ -34,8 +35,8 @@ def pretty(args):
             if args.patch and args.patch not in patch["name"]: continue
 
             if i % 4 == 0:
-                print(f"U{i // 4}")
-            print(f"{indent}{i % 4 + 1}: {patch['name']} ({i:02d})"
+                print(f"U{i // 4 + 1}")
+            print(f"{indent}{i % 4 + 1}: {patch['name']} ({i+1:02d})"
                   f"{indent*2}{control_string(patch['params'])}")
 
             if not args.patch_list:
